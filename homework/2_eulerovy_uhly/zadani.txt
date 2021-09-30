@@ -1,0 +1,4 @@
+https://cw.felk.cvut.cz/brute/data/ae/release/2021z_b3b33rob/rob2021/specs/spec_euler_cz.pdf
+
+Testovací data:
+https://cw.felk.cvut.cz/brute/data/ae/release/2021z_b3b33rob/rob2021/specs/template_euler/
