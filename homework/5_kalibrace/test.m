@@ -39,13 +39,13 @@ for point = 1:size(J, 2)
     Xm(:, point) = this_dktX;
 end   
 
-hold on;
-for col = 1:size(J, 2)
-    plot(Xm(1, col), Xm(2, col), 'rx')
-end
-title('Souřadnice kalibračních bodů v pracovním prostoru robota')
-xlabel('souřadnice x')
-ylabel('souřadnice y')
+% hold on;
+% for col = 1:size(J, 2)
+%     plot(Xm(1, col), Xm(2, col), 'rx')
+% end
+%title('Souřadnice kalibračních bodů v pracovním prostoru robota')
+%xlabel('souřadnice x')
+%ylabel('souřadnice y')
 
 Xm = Xm + 0.01 * randn(size(Xm));
 

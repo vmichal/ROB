@@ -45,22 +45,36 @@ calib.rotations(isnan(calib.rotations)) = 0;
 d = extract_robot_params(robot);
 iterations = 1:25;
 err_vector = zeros(size(iterations));
+delta_d_cache = zeros(size(iterations));
+calib_cache = zeros(size(iterations));
 for iteration = iterations
    %fprintf("Iteration %d:\n", iteration);
    jacob = calculate_jacobian(Xm, J, d);
+   calib_cache(iteration) = cond(jacob' * jacob);
    %fprintf('Jacobian condition number %.2f\n', cond(jacob * jacob'));
    err = error_function(Xm, J, d);
    err_vector(iteration) = norm(err);
    %fprintf("r = %.4f\n", norm(err));
    
-   delta_d = jacob' * ((jacob * jacob') \ err);
+   delta_d = (jacob' * jacob) \ jacob' * err;
+   delta_d_cache(iteration) = norm(delta_d);
    d = d - delta_d;
 end
 
-% semilogy(iterations, err_vector);
-% title('Celková chyba jako funkce iterace')
-% xlabel('Pořadové číslo iterace')
-% ylabel('Norma chybového vektoru')
+plot(iterations, err_vector, 'linewidth', 2);
+title('Celková chyba jako funkce iterace')
+xlabel('Pořadové číslo iterace')
+ylabel('Norma chybového vektoru')
+figure;
+plot(iterations, calib_cache, 'linewidth', 2);
+title("Podmíněnost matice J'*J jako funkce iterace")
+xlabel('Pořadové číslo iterace')
+ylabel("cond(J'*J)")
+figure;
+plot(iterations, delta_d_cache, 'linewidth', 2);
+title('Změna parametrů mezi iteracemi');
+xlabel('Pořadové číslo iterace')
+ylabel('Norma \Delta d')
 
 % Calibration finished, store results
 calib.links(2,1) = d(1);
@@ -72,9 +86,10 @@ calib.origins = [d(6:7) d(8:9)];
 end
 
 function jacobian = calculate_jacobian(X, J, d)
-    jacobian = zeros(2, length(d));
+    meas_count = size(X, 2);
+    jacobian = zeros(2*meas_count, length(d));
     for point = 1:size(X, 2)
-        jacobian = jacobian + calculate_jacobian_one(X(:, point), J(:, point), d);
+        jacobian(2*point - 1:2*point, :) = calculate_jacobian_one(X(:, point), J(:, point), d);
     end
 end
 

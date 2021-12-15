@@ -4,7 +4,7 @@ function r = error_function(Xm, J, d)
     l21 = d(1);
     l22 = d(2);
     
-    r = [0 ; 0 ];
+    r = zeros(2 * size(Xm, 2), 1);
     for point = 1:size(Xm, 2)
         this_X = Xm(:, point);
         this_J = J(:, point);
@@ -17,7 +17,6 @@ function r = error_function(Xm, J, d)
         f1 = (xx - o1x)^2 + (xy - o1y)^2 - l21^2;
         f2 = (xx - o2x)^2 + (xy - o2y)^2 - l22^2;
         
-        
-        r = r + [f1; f2];        
+        r(2 * point - 1: 2 * point) = [f1; f2];
     end    
 end
